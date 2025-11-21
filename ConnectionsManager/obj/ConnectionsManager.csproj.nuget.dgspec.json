@@ -1,31 +1,30 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\guinh\\Desktop\\BYUI\\Team-17\\ConnectionsManager\\ConnectionsManager.csproj": {}
+    "/Users/brandonherrin/Documents/BYUI/CSE325/Team-17/ConnectionsManager/ConnectionsManager.csproj": {}
   },
   "projects": {
-    "C:\\Users\\guinh\\Desktop\\BYUI\\Team-17\\ConnectionsManager\\ConnectionsManager.csproj": {
+    "/Users/brandonherrin/Documents/BYUI/CSE325/Team-17/ConnectionsManager/ConnectionsManager.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\guinh\\Desktop\\BYUI\\Team-17\\ConnectionsManager\\ConnectionsManager.csproj",
+        "projectUniqueName": "/Users/brandonherrin/Documents/BYUI/CSE325/Team-17/ConnectionsManager/ConnectionsManager.csproj",
         "projectName": "ConnectionsManager",
-        "projectPath": "C:\\Users\\guinh\\Desktop\\BYUI\\Team-17\\ConnectionsManager\\ConnectionsManager.csproj",
-        "packagesPath": "C:\\Users\\guinh\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\guinh\\Desktop\\BYUI\\Team-17\\ConnectionsManager\\obj\\",
+        "projectPath": "/Users/brandonherrin/Documents/BYUI/CSE325/Team-17/ConnectionsManager/ConnectionsManager.csproj",
+        "packagesPath": "/Users/brandonherrin/.nuget/packages/",
+        "outputPath": "/Users/brandonherrin/Documents/BYUI/CSE325/Team-17/ConnectionsManager/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\guinh\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "/Users/brandonherrin/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
-          "net7.0"
+          "net8.0"
         ],
         "sources": {
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
-          "net7.0": {
-            "targetAlias": "net7.0",
+          "net8.0": {
+            "targetAlias": "net8.0",
             "projectReferences": {}
           }
         },
@@ -39,31 +38,31 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "10.0.100"
+        "SdkAnalysisLevel": "9.0.300"
       },
       "frameworks": {
-        "net7.0": {
-          "targetAlias": "net7.0",
+        "net8.0": {
+          "targetAlias": "net8.0",
           "dependencies": {
             "Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore": {
               "target": "Package",
-              "version": "[7.0.11, )"
+              "version": "[8.0.11, )"
             },
             "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
               "target": "Package",
-              "version": "[7.0.11, )"
+              "version": "[8.0.11, )"
             },
             "Microsoft.AspNetCore.Identity.UI": {
               "target": "Package",
-              "version": "[7.0.11, )"
+              "version": "[8.0.11, )"
             },
             "Microsoft.EntityFrameworkCore.Sqlite": {
               "target": "Package",
-              "version": "[7.0.11, )"
+              "version": "[8.0.11, )"
             },
             "Microsoft.EntityFrameworkCore.Tools": {
               "target": "Package",
-              "version": "[7.0.11, )"
+              "version": "[8.0.11, )"
             }
           },
           "imports": [
@@ -80,19 +79,15 @@
           "downloadDependencies": [
             {
               "name": "Microsoft.AspNetCore.App.Ref",
-              "version": "[7.0.20, 7.0.20]"
+              "version": "[8.0.22, 8.0.22]"
             },
             {
-              "name": "Microsoft.NETCore.App.Host.win-x64",
-              "version": "[7.0.20, 7.0.20]"
+              "name": "Microsoft.NETCore.App.Host.osx-arm64",
+              "version": "[8.0.22, 8.0.22]"
             },
             {
               "name": "Microsoft.NETCore.App.Ref",
-              "version": "[7.0.20, 7.0.20]"
-            },
-            {
-              "name": "Microsoft.WindowsDesktop.App.Ref",
-              "version": "[7.0.20, 7.0.20]"
+              "version": "[8.0.22, 8.0.22]"
             }
           ],
           "frameworkReferences": {
@@ -103,7 +98,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.100\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/9.0.307/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
