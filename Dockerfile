@@ -3,7 +3,7 @@ WORKDIR /app
 COPY ConnectionsManager/ConnectionsManager.csproj ./
 RUN dotnet restore
 COPY ConnectionsManager/. .
-RUN dotnet publish ConnectionsManager.csproj -c Release -o /app/publish --no-restore
+RUN dotnet publish ConnectionsManager.csproj -c Release -o /app/publish
 
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
 WORKDIR /app
