@@ -1,31 +1,30 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\guinh\\Desktop\\BYUI\\Team-17\\ConnectionsManager\\ConnectionsManager.csproj": {}
+    "C:\\Users\\TechCharities\\Documents\\Team-17\\connectionsmanager\\ConnectionsManager.csproj": {}
   },
   "projects": {
-    "C:\\Users\\guinh\\Desktop\\BYUI\\Team-17\\ConnectionsManager\\ConnectionsManager.csproj": {
+    "C:\\Users\\TechCharities\\Documents\\Team-17\\connectionsmanager\\ConnectionsManager.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\guinh\\Desktop\\BYUI\\Team-17\\ConnectionsManager\\ConnectionsManager.csproj",
+        "projectUniqueName": "C:\\Users\\TechCharities\\Documents\\Team-17\\connectionsmanager\\ConnectionsManager.csproj",
         "projectName": "ConnectionsManager",
-        "projectPath": "C:\\Users\\guinh\\Desktop\\BYUI\\Team-17\\ConnectionsManager\\ConnectionsManager.csproj",
-        "packagesPath": "C:\\Users\\guinh\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\guinh\\Desktop\\BYUI\\Team-17\\ConnectionsManager\\obj\\",
+        "projectPath": "C:\\Users\\TechCharities\\Documents\\Team-17\\connectionsmanager\\ConnectionsManager.csproj",
+        "packagesPath": "C:\\Users\\TechCharities\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\TechCharities\\Documents\\Team-17\\connectionsmanager\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\guinh\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\TechCharities\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
-          "net7.0"
+          "net8.0"
         ],
         "sources": {
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
-          "net7.0": {
-            "targetAlias": "net7.0",
+          "net8.0": {
+            "targetAlias": "net8.0",
             "projectReferences": {}
           }
         },
@@ -42,28 +41,28 @@
         "SdkAnalysisLevel": "10.0.100"
       },
       "frameworks": {
-        "net7.0": {
-          "targetAlias": "net7.0",
+        "net8.0": {
+          "targetAlias": "net8.0",
           "dependencies": {
             "Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore": {
               "target": "Package",
-              "version": "[7.0.11, )"
+              "version": "[8.0.11, )"
             },
             "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
               "target": "Package",
-              "version": "[7.0.11, )"
+              "version": "[8.0.11, )"
             },
             "Microsoft.AspNetCore.Identity.UI": {
               "target": "Package",
-              "version": "[7.0.11, )"
+              "version": "[8.0.11, )"
             },
             "Microsoft.EntityFrameworkCore.Sqlite": {
               "target": "Package",
-              "version": "[7.0.11, )"
+              "version": "[8.0.11, )"
             },
             "Microsoft.EntityFrameworkCore.Tools": {
               "target": "Package",
-              "version": "[7.0.11, )"
+              "version": "[8.0.11, )"
             }
           },
           "imports": [
@@ -80,19 +79,19 @@
           "downloadDependencies": [
             {
               "name": "Microsoft.AspNetCore.App.Ref",
-              "version": "[7.0.20, 7.0.20]"
+              "version": "[8.0.21, 8.0.21]"
             },
             {
               "name": "Microsoft.NETCore.App.Host.win-x64",
-              "version": "[7.0.20, 7.0.20]"
+              "version": "[8.0.21, 8.0.21]"
             },
             {
               "name": "Microsoft.NETCore.App.Ref",
-              "version": "[7.0.20, 7.0.20]"
+              "version": "[8.0.21, 8.0.21]"
             },
             {
               "name": "Microsoft.WindowsDesktop.App.Ref",
-              "version": "[7.0.20, 7.0.20]"
+              "version": "[8.0.21, 8.0.21]"
             }
           ],
           "frameworkReferences": {
@@ -103,7 +102,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.100\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.100-rc.2.25502.107/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
