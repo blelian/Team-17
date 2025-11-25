@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ConnectionsManager")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4ff5dbff2295a1c2a7bf9e834e8ef2f69f3415aa")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+33653fc9d4e40bcbcbd64dbfe339511392345c65")]
 [assembly: System.Reflection.AssemblyProductAttribute("ConnectionsManager")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ConnectionsManager")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
