@@ -2866,24 +2866,25 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\TechCharities\\.nuget\\packages\\": {}
+    "C:\\Users\\guinh\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\TechCharities\\Documents\\Team-17\\connectionsmanager\\ConnectionsManager.csproj",
+      "projectUniqueName": "C:\\Users\\guinh\\Desktop\\BYUI\\Team-17\\ConnectionsManager\\ConnectionsManager.csproj",
       "projectName": "ConnectionsManager",
-      "projectPath": "C:\\Users\\TechCharities\\Documents\\Team-17\\connectionsmanager\\ConnectionsManager.csproj",
-      "packagesPath": "C:\\Users\\TechCharities\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\TechCharities\\Documents\\Team-17\\connectionsmanager\\obj\\",
+      "projectPath": "C:\\Users\\guinh\\Desktop\\BYUI\\Team-17\\ConnectionsManager\\ConnectionsManager.csproj",
+      "packagesPath": "C:\\Users\\guinh\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\guinh\\Desktop\\BYUI\\Team-17\\ConnectionsManager\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\TechCharities\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\guinh\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
       ],
       "sources": {
+        "C:\\Program Files\\dotnet\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -2943,19 +2944,19 @@
         "downloadDependencies": [
           {
             "name": "Microsoft.AspNetCore.App.Ref",
-            "version": "[8.0.21, 8.0.21]"
+            "version": "[8.0.22, 8.0.22]"
           },
           {
             "name": "Microsoft.NETCore.App.Host.win-x64",
-            "version": "[8.0.21, 8.0.21]"
+            "version": "[8.0.22, 8.0.22]"
           },
           {
             "name": "Microsoft.NETCore.App.Ref",
-            "version": "[8.0.21, 8.0.21]"
+            "version": "[8.0.22, 8.0.22]"
           },
           {
             "name": "Microsoft.WindowsDesktop.App.Ref",
-            "version": "[8.0.21, 8.0.21]"
+            "version": "[8.0.22, 8.0.22]"
           }
         ],
         "frameworkReferences": {
@@ -2966,7 +2967,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.100-rc.2.25502.107/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.100/PortableRuntimeIdentifierGraph.json"
       }
     }
   }
