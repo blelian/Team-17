@@ -1,26 +1,25 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\guinh\\Desktop\\BYUI\\Team-17\\ConnectionsManager\\ConnectionsManager.csproj": {}
+    "/Users/brandonherrin/Documents/BYUI/CSE325/Team-17/ConnectionsManager/ConnectionsManager.csproj": {}
   },
   "projects": {
-    "C:\\Users\\guinh\\Desktop\\BYUI\\Team-17\\ConnectionsManager\\ConnectionsManager.csproj": {
+    "/Users/brandonherrin/Documents/BYUI/CSE325/Team-17/ConnectionsManager/ConnectionsManager.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\guinh\\Desktop\\BYUI\\Team-17\\ConnectionsManager\\ConnectionsManager.csproj",
+        "projectUniqueName": "/Users/brandonherrin/Documents/BYUI/CSE325/Team-17/ConnectionsManager/ConnectionsManager.csproj",
         "projectName": "ConnectionsManager",
-        "projectPath": "C:\\Users\\guinh\\Desktop\\BYUI\\Team-17\\ConnectionsManager\\ConnectionsManager.csproj",
-        "packagesPath": "C:\\Users\\guinh\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\guinh\\Desktop\\BYUI\\Team-17\\ConnectionsManager\\obj\\",
+        "projectPath": "/Users/brandonherrin/Documents/BYUI/CSE325/Team-17/ConnectionsManager/ConnectionsManager.csproj",
+        "packagesPath": "/Users/brandonherrin/.nuget/packages/",
+        "outputPath": "/Users/brandonherrin/Documents/BYUI/CSE325/Team-17/ConnectionsManager/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\guinh\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "/Users/brandonherrin/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -39,7 +38,7 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "10.0.100"
+        "SdkAnalysisLevel": "9.0.300"
       },
       "frameworks": {
         "net8.0": {
@@ -64,6 +63,10 @@
             "Microsoft.EntityFrameworkCore.Tools": {
               "target": "Package",
               "version": "[8.0.11, )"
+            },
+            "Npgsql.EntityFrameworkCore.PostgreSQL": {
+              "target": "Package",
+              "version": "[8.0.11, )"
             }
           },
           "imports": [
@@ -83,15 +86,11 @@
               "version": "[8.0.22, 8.0.22]"
             },
             {
-              "name": "Microsoft.NETCore.App.Host.win-x64",
+              "name": "Microsoft.NETCore.App.Host.osx-arm64",
               "version": "[8.0.22, 8.0.22]"
             },
             {
               "name": "Microsoft.NETCore.App.Ref",
-              "version": "[8.0.22, 8.0.22]"
-            },
-            {
-              "name": "Microsoft.WindowsDesktop.App.Ref",
               "version": "[8.0.22, 8.0.22]"
             }
           ],
@@ -103,7 +102,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.100/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/9.0.307/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
