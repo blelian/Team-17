@@ -1,0 +1,71 @@
+@using Microsoft.AspNetCore.Components
+@using Microsoft.AspNetCore.Components.Forms
+
+<div class="modal fade show d-block" tabindex="-1" role="dialog" style="background: rgba(0,0,0,0.5);" @onclick="CloseModal">
+    <div class="modal-dialog" role="document" @onclick:stopPropagation>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Note</h5>
+                <button type="button" class="close btn btn-link" @onclick="CloseModal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <EditForm Model="note" OnValidSubmit="HandleValidSubmit">
+                    <div class="form-group mb-2">
+                        <label>Topic</label>
+                        <InputText class="form-control" @bind-Value="note.Topic" />
+                    </div>
+                    <div class="form-group mb-2">
+                        <label>Details</label>
+                        <InputTextArea class="form-control" @bind-Value="note.Details" />
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add Note</button>
+                </EditForm>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public EventCallback<Note> OnNoteAdded { get; set; }
+    [Parameter] public EventCallback OnClose { get; set; }
+
+    [Parameter] public Note? NoteToEdit { get; set; }
+
+    private Note note = new Note();
+
+    protected override void OnParametersSet()
+    {
+        if (NoteToEdit != null)
+        {
+            note = new Note
+            {
+                Topic = NoteToEdit.Topic,
+                Details = NoteToEdit.Details
+            };
+        }
+        else
+        {
+            note = new Note();
+        }
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        await OnNoteAdded.InvokeAsync(note);
+        await CloseModal();
+    }
+
+    private async Task CloseModal()
+    {
+        if (OnClose.HasDelegate)
+            await OnClose.InvokeAsync();
+    }
+
+    public class Note
+    {
+        public string Topic { get; set; } = string.Empty;
+        public string Details { get; set; } = string.Empty;
+    }
+}
