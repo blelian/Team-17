@@ -1,0 +1,72 @@
+@page "/reminders"
+
+@using ConnectionsManager.Shared.ComponentLibrary
+
+<h1>Reminders</h1>
+<p>Here you can view and manage your reminders.</p>
+
+<div class="d-flex justify-content-end">
+    <button class="btn btn-primary mb-3" @onclick="ShowAddReminderModal">
+        <span class="oi oi-plus" aria-hidden="true"></span> Add Reminder
+    </button>
+</div>
+
+@if (showAddReminderModal)
+{
+    <AddReminderModal OnReminderAdded="AddReminder" OnClose="HideAddReminderModal" />
+}
+@if (editReminderIndex != -1)
+{
+    <AddReminderModal OnReminderAdded="UpdateReminder" OnClose="CancelEditReminder" ReminderToEdit="reminders[editReminderIndex]" />
+}
+
+<ul>
+    @for (int i = 0; i < reminders.Count; i++)
+    {
+        var reminder = reminders[i];
+        <li>
+            <strong>@reminder.Date.ToShortDateString()</strong> @reminder.Time - <b>@reminder.Subject</b>: @reminder.Details
+            <button class="btn btn-sm btn-secondary ms-2" @onclick="() => EditReminder(i)"><span class="oi oi-pencil"></span> Edit</button>
+            <button class="btn btn-sm btn-danger ms-1" @onclick="() => DeleteReminder(i)"><span class="oi oi-trash"></span> Delete</button>
+        </li>
+    }
+</ul>
+
+@code {
+    private bool showAddReminderModal = false;
+    private int editReminderIndex = -1;
+    private List<AddReminderModal.Reminder> reminders = new();
+
+    private void ShowAddReminderModal() => showAddReminderModal = true;
+    private void HideAddReminderModal() => showAddReminderModal = false;
+
+    private void AddReminder(AddReminderModal.Reminder reminder)
+    {
+        reminders.Add(reminder);
+        showAddReminderModal = false;
+    }
+
+    private void EditReminder(int index)
+    {
+        editReminderIndex = index;
+    }
+
+    private void UpdateReminder(AddReminderModal.Reminder updatedReminder)
+    {
+        if (editReminderIndex != -1)
+        {
+            reminders[editReminderIndex] = updatedReminder;
+            editReminderIndex = -1;
+        }
+    }
+
+    private void CancelEditReminder()
+    {
+        editReminderIndex = -1;
+    }
+
+    private void DeleteReminder(int index)
+    {
+        reminders.RemoveAt(index);
+    }
+}

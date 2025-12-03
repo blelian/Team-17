@@ -1,0 +1,22 @@
+@* Reusable button component with optional icon *@
+<button class="btn @ButtonClass" @onclick="OnClick">
+    @if (!string.IsNullOrEmpty(Icon))
+    {
+        <span class="@Icon" aria-hidden="true" style="margin-right: 0.5em;"></span>
+    }
+    @Text
+</button>
+
+@code {
+    [Parameter]
+    public string Text { get; set; } = "Button";
+
+    [Parameter]
+    public string ButtonClass { get; set; } = "btn-primary";
+
+    [Parameter]
+    public string? Icon { get; set; }
+
+    [Parameter]
+    public EventCallback OnClick { get; set; }
+}
