@@ -1,0 +1,70 @@
+@using Microsoft.AspNetCore.Components
+
+@using Microsoft.AspNetCore.Components.Forms
+
+<div class="modal fade show d-block" tabindex="-1" role="dialog" style="background: rgba(0,0,0,0.5);" @onclick="CloseModal">
+    <div class="modal-dialog" role="document" @onclick:stopPropagation>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Reminder</h5>
+                <button type="button" class="close btn btn-link" @onclick="CloseModal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <EditForm Model="reminder" OnValidSubmit="HandleValidSubmit">
+                    <div class="form-group mb-2">
+                        <label>Date (DD/MM/YYYY)</label>
+                        <InputDate class="form-control" @bind-Value="reminder.Date" />
+                    </div>
+                    <div class="form-group mb-2">
+                        <label>Time</label>
+                        <InputText class="form-control" type="time" @bind-Value="timeString" />
+                    </div>
+                    <div class="form-group mb-2">
+                        <label>Subject</label>
+                        <InputText class="form-control" @bind-Value="reminder.Subject" />
+                    </div>
+                    <div class="form-group mb-2">
+                        <label>Details</label>
+                        <InputTextArea class="form-control" @bind-Value="reminder.Details" />
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add Reminder</button>
+                </EditForm>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public EventCallback<Reminder> OnReminderAdded { get; set; }
+    [Parameter] public EventCallback OnClose { get; set; }
+
+    private Reminder reminder = new Reminder();
+
+        private string timeString = "";
+
+    private async Task HandleValidSubmit()
+    {
+           if (TimeSpan.TryParse(timeString, out var time))
+           {
+              reminder.Time = time;
+           }
+           await OnReminderAdded.InvokeAsync(reminder);
+           await CloseModal();
+    }
+
+    private async Task CloseModal()
+    {
+        if (OnClose.HasDelegate)
+            await OnClose.InvokeAsync();
+    }
+
+    public class Reminder
+    {
+        public DateTime Date { get; set; }
+        public TimeSpan Time { get; set; }
+        public string Subject { get; set; } = string.Empty;
+        public string Details { get; set; } = string.Empty;
+    }
+}

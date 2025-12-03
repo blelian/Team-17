@@ -1,0 +1,72 @@
+@page "/mynotes"
+
+@using ConnectionsManager.Shared.ComponentLibrary
+
+<h1>My Notes</h1>
+<p>Here you can view and manage your personal notes.</p>
+
+<div class="d-flex justify-content-end">
+    <button class="btn btn-primary mb-3" @onclick="ShowAddNoteModal">
+        <span class="oi oi-plus" aria-hidden="true"></span> Add Note
+    </button>
+</div>
+
+@if (showAddNoteModal)
+{
+    <AddNoteModal OnNoteAdded="AddNote" OnClose="HideAddNoteModal" />
+}
+@if (editNoteIndex != -1)
+{
+    <AddNoteModal OnNoteAdded="UpdateNote" OnClose="CancelEditNote" NoteToEdit="notes[editNoteIndex]" />
+}
+
+<ul>
+    @for (int i = 0; i < notes.Count; i++)
+    {
+        var note = notes[i];
+        <li>
+            <strong>@note.Topic</strong>: @note.Details
+            <button class="btn btn-sm btn-secondary ms-2" @onclick="() => EditNote(i)"><span class="oi oi-pencil"></span> Edit</button>
+            <button class="btn btn-sm btn-danger ms-1" @onclick="() => DeleteNote(i)"><span class="oi oi-trash"></span> Delete</button>
+        </li>
+    }
+</ul>
+
+@code {
+    private bool showAddNoteModal = false;
+    private int editNoteIndex = -1;
+    private List<AddNoteModal.Note> notes = new();
+
+    private void ShowAddNoteModal() => showAddNoteModal = true;
+    private void HideAddNoteModal() => showAddNoteModal = false;
+
+    private void AddNote(AddNoteModal.Note note)
+    {
+        notes.Add(note);
+        showAddNoteModal = false;
+    }
+
+    private void EditNote(int index)
+    {
+        editNoteIndex = index;
+    }
+
+    private void UpdateNote(AddNoteModal.Note updatedNote)
+    {
+        if (editNoteIndex != -1)
+        {
+            notes[editNoteIndex] = updatedNote;
+            editNoteIndex = -1;
+        }
+    }
+
+    private void CancelEditNote()
+    {
+        editNoteIndex = -1;
+    }
+
+    private void DeleteNote(int index)
+    {
+        notes.RemoveAt(index);
+    }
+}
