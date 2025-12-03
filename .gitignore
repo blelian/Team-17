@@ -42,3 +42,5 @@ app.db
 **/appsettings.local.json
 
   ConnectionsManager/appsettings.Development.json
+
+.claude/
