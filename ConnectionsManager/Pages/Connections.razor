@@ -18,7 +18,7 @@
 @using ConnectionsManager.Shared.ComponentLibrary
 @if (showAddConnectionModal)
 {
-    <AddConnectionModal OnConnectionAdded="AddConnection" />
+    <AddConnectionModal OnConnectionAdded="AddConnection" OnClose="HideAddConnectionModal" />
 }
 
 @code {
@@ -26,8 +26,10 @@
     private bool showAddConnectionModal = false;
     private void AddConnection(Connection connection)
     {
-        connections.Add(connection);
+        if (connection != null)
+            connections.Add(connection);
         showAddConnectionModal = false;
     }
     private void ShowAddConnectionModal() => showAddConnectionModal = true;
+    private void HideAddConnectionModal() => showAddConnectionModal = false;
 }
