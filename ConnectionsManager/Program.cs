@@ -30,7 +30,7 @@ builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddHttpClient();
 builder.Services.AddScoped<ZenQuoteService>();
 
-// ✅ Add Google authentication from configuration
+// ✅ Add Google authentication from configuration (reads from user secrets)
 builder.Services.AddAuthentication()
     .AddGoogle(googleOptions =>
     {
