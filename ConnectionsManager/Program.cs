@@ -4,12 +4,16 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication; // <-- important for AddGoogle
 using ConnectionsManager.Areas.Identity;
 using ConnectionsManager.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// --------------------------
+// Add services to the container
+// --------------------------
+
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
     ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
@@ -18,24 +22,40 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
-    .AddEntityFrameworkStores<ApplicationDbContext>();
+// Add Identity with default UI
+builder.Services.AddDefaultIdentity<IdentityUser>(options =>
+{
+    options.SignIn.RequireConfirmedAccount = false; // enable if needed
+})
+.AddEntityFrameworkStores<ApplicationDbContext>();
 
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
-
 builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
+
+// Register your custom services
 builder.Services.AddSingleton<WeatherForecastService>();
-
-// ✅ Register HttpClient (required for API calls)
 builder.Services.AddHttpClient();
-
-// 🚀 ZenQuotes service (depends on HttpClient)
 builder.Services.AddScoped<ZenQuoteService>();
 
+// --------------------------
+// Add Google OAuth (works in .NET 8)
+// --------------------------
+builder.Services.AddAuthentication()
+    .AddGoogle("Google", options =>
+    {
+        options.ClientId = builder.Configuration["Authentication:Google:ClientId"];
+        options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
+    });
+
+// --------------------------
+// Build the app
+// --------------------------
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// --------------------------
+// Configure HTTP request pipeline
+// --------------------------
 if (app.Environment.IsDevelopment())
 {
     app.UseMigrationsEndPoint();
@@ -49,9 +69,11 @@ else
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
+
 app.UseAuthentication();
 app.UseAuthorization();
 
+// Map endpoints
 app.MapControllers();
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
