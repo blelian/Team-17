@@ -27,15 +27,20 @@ builder.Services.AddServerSideBlazor();
 builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
 builder.Services.AddSingleton<WeatherForecastService>();
 
-// ✅ Register HttpClient (required for API calls)
 builder.Services.AddHttpClient();
-
-// 🚀 ZenQuotes service (depends on HttpClient)
 builder.Services.AddScoped<ZenQuoteService>();
+
+// ✅ Add Google authentication from configuration
+builder.Services.AddAuthentication()
+    .AddGoogle(googleOptions =>
+    {
+        googleOptions.ClientId = builder.Configuration["Authentication:Google:ClientId"];
+        googleOptions.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
+        googleOptions.SignInScheme = IdentityConstants.ExternalScheme;
+    });
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseMigrationsEndPoint();
