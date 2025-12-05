@@ -38,15 +38,6 @@ builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddHttpClient();
 builder.Services.AddScoped<ZenQuoteService>();
 
-// --------------------------
-// Add Google OAuth (works in .NET 8)
-// --------------------------
-builder.Services.AddAuthentication()
-    .AddGoogle("Google", options =>
-    {
-        options.ClientId = builder.Configuration["Authentication:Google:ClientId"];
-        options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
-    });
 
 // --------------------------
 // Build the app
