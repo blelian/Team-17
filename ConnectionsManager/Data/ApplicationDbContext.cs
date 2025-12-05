@@ -9,4 +9,9 @@ public class ApplicationDbContext : IdentityDbContext
         : base(options)
     {
     }
+
+    // Add DbSets for your pages
+    public DbSet<Connection> Connections { get; set; } = null!;
+    public DbSet<Note> Notes { get; set; } = null!;
+    public DbSet<Reminder> Reminders { get; set; } = null!;
 }
