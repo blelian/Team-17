@@ -17,6 +17,11 @@
             </NavLink>
         </div>
         <div class="nav-item">
+                <a class="nav-link" href="#" @onclick="ShowNotificationsModal">
+                    <span class="oi oi-bell" aria-hidden="true"></span> Notifications
+                </a>
+            </div>
+        <div class="nav-item">
                 <NavLink class="nav-link" href="connections">
                     <span class="oi oi-people" aria-hidden="true"></span> Connections
                 </NavLink>
@@ -42,6 +47,11 @@
                 </NavLink>
             </div>
             <div class="nav-item">
+                <NavLink class="nav-link" href="giftideas">
+                    <span class="oi oi-lightbulb" aria-hidden="true"></span> Gift Ideas
+                </NavLink>
+            </div>
+            <div class="nav-item">
                 <NavLink class="nav-link" href="settings">
                     <span class="oi oi-cog" aria-hidden="true"></span> Settings
                 </NavLink>
@@ -56,6 +66,7 @@
 
 @code {
     private bool collapseNavMenu = true;
+    private bool showNotificationsModal = false;
 
     private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
 
@@ -63,4 +74,32 @@
     {
         collapseNavMenu = !collapseNavMenu;
     }
+
+    private void ShowNotificationsModal()
+    {
+        showNotificationsModal = true;
+    }
+    private void HideNotificationsModal()
+    {
+        showNotificationsModal = false;
+    }
+}
+
+@if (showNotificationsModal)
+{
+    <div class="modal fade show d-block" tabindex="-1" role="dialog" style="background: rgba(0,0,0,0.5);" @onclick="HideNotificationsModal">
+        <div class="modal-dialog" role="document" @onclick:stopPropagation>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Notifications</h5>
+                    <button type="button" class="close btn btn-link" @onclick="HideNotificationsModal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>No Notifications</p>
+                </div>
+            </div>
+        </div>
+    </div>
 }
