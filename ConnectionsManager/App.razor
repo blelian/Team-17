@@ -7,7 +7,12 @@
         <Found Context="routeData">
             <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
                 <NotAuthorized>
-                    @if (context?.User?.Identity == null || !context.User.Identity.IsAuthenticated)
+                    @* Allow Index.razor (Home) without login *@
+                    @if (routeData.PageType == typeof(Index))
+                    {
+                        <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+                    }
+                    else if (context?.User?.Identity == null || !context.User.Identity.IsAuthenticated)
                     {
                         Navigation.NavigateTo("Identity/Account/Login", true);
                     }
