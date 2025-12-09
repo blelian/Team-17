@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication; // <-- important for AddGoogle
 using ConnectionsManager.Areas.Identity;
 using ConnectionsManager.Data;
 
@@ -43,11 +44,15 @@ builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddHttpClient();
 builder.Services.AddScoped<ZenQuoteService>();
 
+
 // --------------------------
-// Build & configure pipeline
+// Build the app
 // --------------------------
 var app = builder.Build();
 
+// --------------------------
+// Configure HTTP request pipeline
+// --------------------------
 if (app.Environment.IsDevelopment())
 {
     app.UseMigrationsEndPoint();
@@ -61,9 +66,11 @@ else
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
+
 app.UseAuthentication();
 app.UseAuthorization();
 
+// Map endpoints
 app.MapControllers();
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
