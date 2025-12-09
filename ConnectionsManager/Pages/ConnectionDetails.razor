@@ -1,0 +1,98 @@
+@page "/connection/{id:int}"
+@using ConnectionsManager.Data
+@inject ApplicationDbContext dbContext
+@inject NavigationManager NavigationManager
+
+<h1>Connection Details</h1>
+@if (connection != null)
+{
+    <div class="connection-details">
+        <p class="connection-name">@connection.FirstName @connection.LastName</p>
+        <p><strong>Relationship:</strong> @connection.Relationship</p>
+        <p><strong>Birth Date:</strong> @connection.BirthDate?.ToShortDateString()</p>
+        <p><strong>Email:</strong> @connection.Email</p>
+        <p><strong>Phone:</strong> @connection.Phone</p>
+        <p><strong>Address:</strong> @connection.Address</p>
+        <button class="btn-edit" @onclick="EditConnection">Edit</button>
+        <button class="btn-delete" @onclick="DeleteConnection">Delete</button>
+    </div>
+}
+else
+{
+    <p>Loading...</p>
+}
+
+@if (showEditForm && connection != null)
+{
+    <EditForm Model="connection" OnValidSubmit="SaveEdit">
+        <div class="form-group mb-2">
+            <label>First Name</label>
+            <InputText class="form-control" @bind-Value="connection.FirstName" />
+        </div>
+        <div class="form-group mb-2">
+            <label>Last Name</label>
+            <InputText class="form-control" @bind-Value="connection.LastName" />
+        </div>
+        <div class="form-group mb-2">
+            <label>Relationship</label>
+            <InputText class="form-control" @bind-Value="connection.Relationship" />
+        </div>
+        <div class="form-group mb-2">
+            <label>Birth Date</label>
+            <InputDate class="form-control" @bind-Value="connection.BirthDate" />
+        </div>
+        <div class="form-group mb-2">
+            <label>Email</label>
+            <InputText class="form-control" @bind-Value="connection.Email" />
+        </div>
+        <div class="form-group mb-2">
+            <label>Phone</label>
+            <InputText class="form-control" @bind-Value="connection.Phone" />
+        </div>
+        <div class="form-group mb-2">
+            <label>Address</label>
+            <InputText class="form-control" @bind-Value="connection.Address" />
+        </div>
+        <button type="submit" class="btn btn-success">Save</button>
+        <button type="button" class="btn btn-secondary" @onclick="CancelEdit">Cancel</button>
+    </EditForm>
+}
+
+@code {
+    [Parameter]
+    public int id { get; set; }
+    private Connection connection;
+    private bool showEditForm = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        connection = await dbContext.Connections.FindAsync(id);
+    }
+
+    private void EditConnection()
+    {
+        showEditForm = true;
+    }
+
+    private void CancelEdit()
+    {
+        showEditForm = false;
+    }
+
+    private async Task SaveEdit()
+    {
+        dbContext.Connections.Update(connection);
+        await dbContext.SaveChangesAsync();
+        showEditForm = false;
+    }
+
+    private async Task DeleteConnection()
+    {
+        if (connection != null)
+        {
+            dbContext.Connections.Remove(connection);
+            await dbContext.SaveChangesAsync();
+            NavigationManager.NavigateTo("/connections");
+        }
+    }
+}
