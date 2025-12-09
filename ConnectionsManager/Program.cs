@@ -11,9 +11,14 @@ using ConnectionsManager.Data;
 var builder = WebApplication.CreateBuilder(args);
 
 // --------------------------
-// Add services to the container
+// Load configuration
 // --------------------------
+builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                     .AddJsonFile("appsettings.Secrets.json", optional: true, reloadOnChange: true); // optional secrets
 
+// --------------------------
+// Database
+// --------------------------
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
     ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
@@ -22,18 +27,19 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-// Add Identity with default UI
-builder.Services.AddDefaultIdentity<IdentityUser>(options =>
-{
-    options.SignIn.RequireConfirmedAccount = false; // enable if needed
-})
-.AddEntityFrameworkStores<ApplicationDbContext>();
+// --------------------------
+// Identity
+// --------------------------
+builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
+    .AddEntityFrameworkStores<ApplicationDbContext>();
 
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
 
-// Register your custom services
+// --------------------------
+// Application services
+// --------------------------
 builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddHttpClient();
 builder.Services.AddScoped<ZenQuoteService>();
