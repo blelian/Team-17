@@ -75,3 +75,21 @@ a, .btn-link {
     .blazor-error-boundary::after {
         content: "An error has occurred."
     }
+
+    .login-display-bg {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 1rem;
+        justify-content: flex-end;
+    }
+
+    .login-display-bg a,
+    .login-display-bg form {
+        margin-bottom: 0;
+        white-space: nowrap;
+    }
+
+    .login-display-bg form {
+        display: inline;
+    }

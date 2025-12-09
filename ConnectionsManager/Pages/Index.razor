@@ -3,7 +3,7 @@
 @inject ZenQuoteService QuoteService
 
 <PageTitle>ConnectionsManager</PageTitle>
-<h1>Dashboard</h1>
+<h1>Welcome!</h1>
 
 @if (quote == null)
 {
@@ -17,7 +17,15 @@ else
     </div>
 }
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+
+<!-- Logo Section -->
+<div class="logo-section">
+    <img src="/logo.png" alt="ConnectionsManager Logo" class="logo-img" />
+</div>
+
+<footer class="dashboard-footer">
+    ConnectionsManager &copy; Copyright @DateTime.Now.Year
+</footer>
 
 @code {
     private Quote? quote;
