@@ -1,6 +1,11 @@
 @page "/connections"
 @using ConnectionsManager.Data
 @attribute [Authorize]
+@inject ApplicationDbContext dbContext
+@inject UserManager<IdentityUser> UserManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.EntityFrameworkCore
 
 <h1>Connections</h1>
 
@@ -13,7 +18,10 @@
 <!-- Connection Cards List -->
 <div>
     <h3>Connections List</h3>
-    <!-- Cards will be rendered here -->
+    @foreach (var connection in connections)
+    {
+        <ConnectionCard Connection="connection" />
+    }
 </div>
 
 @using ConnectionsManager.Shared.ComponentLibrary
@@ -25,12 +33,27 @@
 @code {
     private List<Connection> connections = new();
     private bool showAddConnectionModal = false;
-    private void AddConnection(Connection connection)
+    private async Task AddConnection(Connection connection)
     {
         if (connection != null)
-            connections.Add(connection);
+        {
+            dbContext.Connections.Add(connection);
+            await dbContext.SaveChangesAsync();
+            connections.Add(connection); 
+        }
         showAddConnectionModal = false;
     }
     private void ShowAddConnectionModal() => showAddConnectionModal = true;
     private void HideAddConnectionModal() => showAddConnectionModal = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        var userId = UserManager.GetUserId(user);
+
+        connections = await dbContext.Connections
+            .Where(c => c.UserId == userId)
+            .ToListAsync();
+    }
 }

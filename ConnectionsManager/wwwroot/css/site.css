@@ -93,3 +93,64 @@ a, .btn-link {
     .login-display-bg form {
         display: inline;
     }
+
+    /* connection card */
+    .card {
+        display: inline-block;
+        margin: 1rem;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    .connection-card {
+        width: 350px;
+        height: 180px;
+        background: #d9f7e5;
+        border-left: 5pt solid #63816f;
+        color: rgb(35, 35, 35);
+        align-items: center;
+        justify-content: center;
+        align-content: center;
+        border-radius: 12px;
+        text-align: center;
+    }
+    .card-title {
+        font-weight: bold;
+        font-size: 1.5rem;
+        color: #566091;
+    }
+    .card-text {
+        font-size: 1rem;
+        color: #262626;
+    }
+  .connection-details {
+      margin: 0 auto;
+      padding: 2em;
+      border: 1px solid #d1d1d1;
+      border-radius: 8px;
+  }
+  .connection-name {
+    font-size: 2rem;
+    font-weight:bolder;
+    color: #3a4eb7;
+  }
+  .btn-edit {
+      background-color: #3a4eb7!important;
+      border: none!important;
+      color: white!important;
+  }
+  .btn-edit:hover {
+      background-color: #de9415!important;
+      border: none!important;
+      color: white!important;
+  }
+  .btn-delete {
+      background-color: #e2a63e!important;
+      border: none!important;
+      color: white!important;
+  }
+  .btn-delete:hover {
+      background-color: #970000!important;
+      border: none!important;
+      color: white!important;
+  }

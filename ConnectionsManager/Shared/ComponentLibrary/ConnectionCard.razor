@@ -1,0 +1,16 @@
+@using ConnectionsManager.Data
+
+<a class="text-decoration-none" href="@($"/connection/{Connection.Id}")">
+    <div class="card mb-2 connection-card">
+        <div class="card-body">
+            <h5 class="card-title">@Connection.FirstName @Connection.LastName</h5>
+            <p class="card-text">@Connection.Relationship</p>
+            <p class="card-text">@Connection.BirthDate?.ToShortDateString()</p>
+        </div>
+    </div>
+</a>
+
+@code {
+    [Parameter]
+    public Connection Connection { get; set; }
+}

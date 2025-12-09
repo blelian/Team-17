@@ -3,6 +3,7 @@ namespace ConnectionsManager.Data
     public class Connection
     {
         public int Id { get; set; } // primary key
+        public string? UserId { get; set; } // Id from AspNetUsers
 
         public string FirstName { get; set; } = string.Empty;
         public string LastName { get; set; } = string.Empty;
