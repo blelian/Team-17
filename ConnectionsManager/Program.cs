@@ -13,8 +13,8 @@ var builder = WebApplication.CreateBuilder(args);
 // --------------------------
 // Load configuration
 // --------------------------
-builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                     .AddJsonFile("appsettings.Secrets.json", optional: true, reloadOnChange: true); // optional secrets
+// builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+//                      .AddJsonFile("appsettings.Secrets.json", optional: true, reloadOnChange: true); // optional secrets
 
 // --------------------------
 // Database
