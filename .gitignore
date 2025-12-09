@@ -1,3 +1,5 @@
+# Ignore configuration files with secrets
+
 # Build outputs
 bin/
 obj/
@@ -34,6 +36,7 @@ app.db
 # User secrets & environment files
 **/appsettings.Development.json
 **/appsettings.Production.json
+**/appsettings.json
 *.env
 .env
 .env.local
