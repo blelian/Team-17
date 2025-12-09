@@ -154,3 +154,22 @@ a, .btn-link {
       border: none!important;
       color: white!important;
   }
+
+  .card-img-top{
+        width: 100px;
+        height: 100px;
+        object-fit: cover;
+        border-radius: 50%;
+  }
+
+    .dashboard-footer {
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        text-align: center;
+        background: #f8f9fa;
+        padding: 1rem 0;
+        border-top: 1px solid #e5e5e5;
+        z-index: 100;
+    }

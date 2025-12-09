@@ -16,11 +16,11 @@
                 <span class="oi oi-home" aria-hidden="true"></span> Home
             </NavLink>
         </div>
-        <div class="nav-item">
+        @* <div class="nav-item">
                 <a class="nav-link" href="#" @onclick="ShowNotificationsModal">
                     <span class="oi oi-bell" aria-hidden="true"></span> Notifications
                 </a>
-            </div>
+            </div> *@
         <div class="nav-item">
                 <NavLink class="nav-link" href="connections">
                     <span class="oi oi-people" aria-hidden="true"></span> Connections
@@ -46,7 +46,7 @@
                     <span class="oi oi-document" aria-hidden="true"></span> My Notes
                 </NavLink>
             </div>
-            <div class="nav-item">
+            @* <div class="nav-item">
                 <NavLink class="nav-link" href="giftideas">
                     <span class="oi oi-lightbulb" aria-hidden="true"></span> Gift Ideas
                 </NavLink>
@@ -55,7 +55,7 @@
                 <NavLink class="nav-link" href="settings">
                     <span class="oi oi-cog" aria-hidden="true"></span> Settings
                 </NavLink>
-            </div>
+            </div> *@
             <div class="nav-item">
                 <NavLink class="nav-link" href="about">
                     <span class="oi oi-info" aria-hidden="true"></span> About
@@ -66,7 +66,7 @@
 
 @code {
     private bool collapseNavMenu = true;
-    private bool showNotificationsModal = false;
+    // private bool showNotificationsModal = false;
 
     private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
 
@@ -75,6 +75,7 @@
         collapseNavMenu = !collapseNavMenu;
     }
 
+    /*
     private void ShowNotificationsModal()
     {
         showNotificationsModal = true;
@@ -83,9 +84,10 @@
     {
         showNotificationsModal = false;
     }
+    */
 }
 
-@if (showNotificationsModal)
+@* @if (showNotificationsModal)
 {
     <div class="modal fade show d-block" tabindex="-1" role="dialog" style="background: rgba(0,0,0,0.5);" @onclick="HideNotificationsModal">
         <div class="modal-dialog" role="document" @onclick:stopPropagation>
@@ -102,4 +104,4 @@
             </div>
         </div>
     </div>
-}
+} *@
