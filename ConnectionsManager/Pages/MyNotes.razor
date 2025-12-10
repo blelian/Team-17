@@ -1,73 +1,91 @@
 @page "/mynotes"
 @attribute [Authorize]
 
-@using ConnectionsManager.Shared.ComponentLibrary
+@using Microsoft.EntityFrameworkCore
+@using ConnectionsManager.Data
+@inject ApplicationDbContext DbContext
 
 <h1>My Notes</h1>
-<p>Here you can view and manage your personal notes.</p>
 
-<div class="d-flex justify-content-end">
-    <button class="btn btn-primary mb-3" @onclick="ShowAddNoteModal">
-        <span class="oi oi-plus" aria-hidden="true"></span> Add Note
-    </button>
+<div class="mb-3">
+    <input placeholder="Topic" class="form-control mb-1" @bind="newNote.Topic" />
+    <textarea placeholder="Details" class="form-control mb-1" @bind="newNote.Details"></textarea>
+    <div class="form-check mb-2">
+        <input class="form-check-input" type="checkbox" @bind="newNote.IsPrivate" />
+        <label class="form-check-label">Private</label>
+    </div>
+    <button class="btn btn-primary" @onclick="AddNoteAsync">Add Note</button>
 </div>
 
-@if (showAddNoteModal)
-{
-    <AddNoteModal OnNoteAdded="AddNote" OnClose="HideAddNoteModal" />
-}
-@if (editNoteIndex != -1)
-{
-    <AddNoteModal OnNoteAdded="UpdateNote" OnClose="CancelEditNote" NoteToEdit="notes[editNoteIndex]" />
-}
-
 <ul>
-    @for (int i = 0; i < notes.Count; i++)
+    @foreach (var note in notes)
     {
-        var note = notes[i];
-        <li>
+        <li class="mb-2">
             <strong>@note.Topic</strong>: @note.Details
-            <button class="btn btn-sm btn-secondary ms-2" @onclick="() => EditNote(i)"><span class="oi oi-pencil"></span> Edit</button>
-            <button class="btn btn-sm btn-danger ms-1" @onclick="() => DeleteNote(i)"><span class="oi oi-trash"></span> Delete</button>
+            <button class="btn btn-sm btn-secondary ms-2" @onclick="() => EditNote(note)">Edit</button>
+            <button class="btn btn-sm btn-danger ms-1" @onclick="() => DeleteNoteAsync(note)">Delete</button>
         </li>
     }
 </ul>
 
+@if (editingNote != null)
+{
+    <div class="border p-2 mb-2">
+        <h5>Edit Note</h5>
+        <input class="form-control mb-1" @bind="editingNote.Topic" />
+        <textarea class="form-control mb-1" @bind="editingNote.Details"></textarea>
+        <div class="form-check mb-2">
+            <input class="form-check-input" type="checkbox" @bind="editingNote.IsPrivate" />
+            <label class="form-check-label">Private</label>
+        </div>
+        <button class="btn btn-success me-2" @onclick="UpdateNoteAsync">Save</button>
+        <button class="btn btn-secondary" @onclick="CancelEdit">Cancel</button>
+    </div>
+}
+
 @code {
-    private bool showAddNoteModal = false;
-    private int editNoteIndex = -1;
-    private List<AddNoteModal.Note> notes = new();
+    private List<Note> notes = new();
+    private Note newNote = new Note();
+    private Note? editingNote = null;
 
-    private void ShowAddNoteModal() => showAddNoteModal = true;
-    private void HideAddNoteModal() => showAddNoteModal = false;
-
-    private void AddNote(AddNoteModal.Note note)
+    protected override async Task OnInitializedAsync()
     {
-        notes.Add(note);
-        showAddNoteModal = false;
+        notes = await DbContext.Notes.ToListAsync();
     }
 
-    private void EditNote(int index)
+    private async Task AddNoteAsync()
     {
-        editNoteIndex = index;
+        newNote.CreatedAt = DateTime.UtcNow;
+        DbContext.Notes.Add(newNote);
+        await DbContext.SaveChangesAsync();
+        notes.Add(newNote);
+        newNote = new Note(); // reset inputs
     }
 
-    private void UpdateNote(AddNoteModal.Note updatedNote)
+    private void EditNote(Note note)
     {
-        if (editNoteIndex != -1)
+        editingNote = note;
+    }
+
+    private async Task UpdateNoteAsync()
+    {
+        if (editingNote != null)
         {
-            notes[editNoteIndex] = updatedNote;
-            editNoteIndex = -1;
+            DbContext.Notes.Update(editingNote);
+            await DbContext.SaveChangesAsync();
+            editingNote = null;
         }
     }
 
-    private void CancelEditNote()
+    private void CancelEdit()
     {
-        editNoteIndex = -1;
+        editingNote = null;
     }
 
-    private void DeleteNote(int index)
+    private async Task DeleteNoteAsync(Note note)
     {
-        notes.RemoveAt(index);
+        DbContext.Notes.Remove(note);
+        await DbContext.SaveChangesAsync();
+        notes.Remove(note);
     }
 }
