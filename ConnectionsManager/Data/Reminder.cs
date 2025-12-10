@@ -3,6 +3,7 @@ namespace ConnectionsManager.Data
     public class Reminder
     {
         public int Id { get; set; } // primary key
+        public string UserId { get; set; } = string.Empty;
         public string Subject { get; set; } = string.Empty;
         public string Details { get; set; } = string.Empty;
         public DateTime Date { get; set; } // date of the reminder

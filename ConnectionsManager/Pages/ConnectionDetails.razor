@@ -53,8 +53,8 @@ else
             <label>Address</label>
             <InputText class="form-control" @bind-Value="connection.Address" />
         </div>
-        <button type="submit" class="btn btn-success">Save</button>
-        <button type="button" class="btn btn-secondary" @onclick="CancelEdit">Cancel</button>
+        <button type="submit" class="btn-edit">Save</button>
+        <button type="button" class="btn-delete" @onclick="CancelEdit">Cancel</button>
     </EditForm>
 }
 

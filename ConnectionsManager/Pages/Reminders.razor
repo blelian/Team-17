@@ -1,7 +1,10 @@
+@using Microsoft.EntityFrameworkCore
+@inject ConnectionsManager.Data.ApplicationDbContext DbContext
+@inject AuthenticationStateProvider AuthenticationStateProvider
 @page "/reminders"
 @attribute [Authorize]
-
 @using ConnectionsManager.Shared.ComponentLibrary
+
 
 <h1>Reminders</h1>
 <p>Here you can view and manage your reminders.</p>
@@ -21,30 +24,128 @@
     <AddReminderModal OnReminderAdded="UpdateReminder" OnClose="CancelEditReminder" ReminderToEdit="reminders[editReminderIndex]" />
 }
 
-<ul>
-    @for (int i = 0; i < reminders.Count; i++)
-    {
-        var reminder = reminders[i];
-        <li>
-            <strong>@reminder.Date.ToShortDateString()</strong> @reminder.Time - <b>@reminder.Subject</b>: @reminder.Details
-            <button class="btn btn-sm btn-secondary ms-2" @onclick="() => EditReminder(i)"><span class="oi oi-pencil"></span> Edit</button>
-            <button class="btn btn-sm btn-danger ms-1" @onclick="() => DeleteReminder(i)"><span class="oi oi-trash"></span> Delete</button>
-        </li>
-    }
-</ul>
+@if (reminders == null)
+{
+    <div>Loading reminders...</div>
+}
+else if (reminders!.Count == 0)
+{
+    <div>No reminders found.</div>
+}
+else
+{
+    <div class="row">
+        @foreach (var reminder in reminders!)
+        {
+            <div class="col-md-4 mb-3">
+                <div class="card mb-2 connection-card" style="cursor:pointer;" @onclick="() => OpenReminderDetails(reminder.Id)">
+                    <div class="card-body text-center">
+                        <h5 class="card-title mb-2">@reminder.Subject</h5>
+                        <div class="card-text mb-1 text-muted">@reminder.Date.ToShortDateString()</div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
 
 @code {
     private bool showAddReminderModal = false;
     private int editReminderIndex = -1;
-    private List<AddReminderModal.Reminder> reminders = new();
+    private List<AddReminderModal.Reminder>? reminders = null;
 
     private void ShowAddReminderModal() => showAddReminderModal = true;
     private void HideAddReminderModal() => showAddReminderModal = false;
 
-    private void AddReminder(AddReminderModal.Reminder reminder)
+    private async Task AddReminder(AddReminderModal.Reminder reminder)
     {
-        reminders.Add(reminder);
-        showAddReminderModal = false;
+        try
+        {
+            var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+            var user = authState.User;
+            var userId = user?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userId))
+            {
+                // Not authenticated, do not add reminder
+                return;
+            }
+
+            var dbReminder = new ConnectionsManager.Data.Reminder
+            {
+                UserId = userId,
+                Date = DateTime.SpecifyKind(reminder.Date, DateTimeKind.Utc),
+                Time = reminder.Time,
+                Subject = reminder.Subject,
+                Details = reminder.Details
+            };
+
+            DbContext.Reminders.Add(dbReminder);
+            await DbContext.SaveChangesAsync();
+
+            await LoadRemindersAsync();
+            showAddReminderModal = false;
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error adding reminder: {ex.Message}");
+        }
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadRemindersAsync();
+    }
+
+    private async Task LoadRemindersAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        var userId = user?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+        if (string.IsNullOrEmpty(userId))
+        {
+            reminders = new List<AddReminderModal.Reminder>();
+            return;
+        }
+        reminders = await DbContext.Reminders
+            .Where(r => r.UserId == userId)
+            .Select(r => new AddReminderModal.Reminder
+            {
+                Id = r.Id,
+                UserId = r.UserId,
+                Date = r.Date,
+                Time = r.Time,
+                Subject = r.Subject,
+                Details = r.Details
+            })
+            .ToListAsync();
+    }
+    private async Task ReloadReminders()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        var userId = user?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+        Console.WriteLine($"[DEBUG] Current userId for reminders: {userId}");
+        if (string.IsNullOrEmpty(userId))
+        {
+            reminders = new();
+            return;
+        }
+
+        var allUserIds = await DbContext.Reminders.Select(r => r.UserId).ToListAsync();
+        Console.WriteLine($"[DEBUG] All UserIds in Reminders table: {string.Join(", ", allUserIds)}");
+        reminders = await DbContext.Reminders
+            .Where(r => r.UserId == userId)
+            .Select(r => new AddReminderModal.Reminder
+            {
+                Id = r.Id,
+                UserId = r.UserId,
+                Date = r.Date,
+                Time = r.Time,
+                Subject = r.Subject,
+                Details = r.Details
+            })
+            .ToListAsync();
+        Console.WriteLine($"[DEBUG] Loaded {reminders.Count} reminders for userId {userId}");
     }
 
     private void EditReminder(int index)
@@ -54,7 +155,7 @@
 
     private void UpdateReminder(AddReminderModal.Reminder updatedReminder)
     {
-        if (editReminderIndex != -1)
+        if (editReminderIndex != -1 && reminders != null)
         {
             reminders[editReminderIndex] = updatedReminder;
             editReminderIndex = -1;
@@ -68,6 +169,15 @@
 
     private void DeleteReminder(int index)
     {
-        reminders.RemoveAt(index);
+        if (reminders != null)
+        {
+            reminders.RemoveAt(index);
+        }
+    }
+
+    [Inject] public NavigationManager NavigationManager { get; set; } = default!;
+    private void OpenReminderDetails(int reminderId)
+    {
+        NavigationManager.NavigateTo($"/reminder/{reminderId}");
     }
 }
