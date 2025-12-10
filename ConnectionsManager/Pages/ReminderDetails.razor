@@ -21,14 +21,14 @@ else
         <p><strong>Date:</strong> @reminder.Date.ToShortDateString()</p>
         <p><strong>Time:</strong> @DateTime.Today.Add(reminder.Time).ToString("hh:mm tt")</p>
         <p><strong>Details:</strong> @reminder.Details</p>
-    <div class="d-flex gap-2 mt-3">
-        <button class="btn-edit d-flex align-items-center" @onclick="ShowEditModal">
-            <span class="oi oi-pencil me-1" aria-hidden="true"></span> Edit
-        </button>
-        <button class="btn-delete d-flex align-items-center" @onclick="DeleteReminder">
-            <span class="oi oi-trash me-1" aria-hidden="true"></span> Delete
-        </button>
-    </div>
+        <div class="d-flex gap-2 mt-3">
+            <button class="btn-edit d-flex align-items-center" @onclick="ShowEditModal">
+                <span class="oi oi-pencil me-1" aria-hidden="true"></span> Edit
+            </button>
+            <button class="btn-delete d-flex align-items-center" @onclick="DeleteReminder">
+                <span class="oi oi-trash me-1" aria-hidden="true"></span> Delete
+            </button>
+        </div>
     </div>
     @if (showEditModal)
     {
@@ -70,9 +70,10 @@ else
         var user = authState.User;
         var userId = user?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
         canEdit = reminder != null && reminder.UserId == userId;
-        if (TimeSpan.TryParse(timeString, out var time))
+        
+        if (reminder != null)
         {
-            reminder.Time = time;
+            timeString = reminder.Time.ToString(@"hh\:mm");
         }
     }
 
@@ -81,16 +82,35 @@ else
 
     private async Task HandleEditSubmit()
     {
-        if (reminder != null)
+        try
         {
-            if (TimeSpan.TryParse(timeString, out var ts))
+            if (reminder != null)
             {
-                reminder.Time = ts;
+                var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+                var user = authState.User;
+                var userId = user?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+                if (!string.IsNullOrEmpty(userId))
+                {
+                    reminder.UserId = userId;
+                }
+                
+                if (TimeSpan.TryParse(timeString, out var ts))
+                {
+                    reminder.Time = ts;
+                }
+                
+                reminder.Date = reminder.Date.Date.ToUniversalTime();
+                
+                DbContext.Reminders.Update(reminder);
+                await DbContext.SaveChangesAsync();
+                showEditModal = false;
+                StateHasChanged();
             }
-            DbContext.Reminders.Update(reminder);
-            await DbContext.SaveChangesAsync();
-            showEditModal = false;
-            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error saving reminder: {ex.Message}");
+            Console.WriteLine($"Full Exception: {ex}");
         }
     }
     private async Task DeleteReminder()

@@ -2,6 +2,10 @@
 @attribute [Authorize]
 
 @using ConnectionsManager.Shared.ComponentLibrary
+@using Microsoft.EntityFrameworkCore
+
+@inject ConnectionsManager.Data.ApplicationDbContext DbContext
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
 <h1>My Notes</h1>
 <p>Here you can view and manage your personal notes.</p>
@@ -12,41 +16,134 @@
     </button>
 </div>
 
+
 @if (showAddNoteModal)
 {
     <AddNoteModal OnNoteAdded="AddNote" OnClose="HideAddNoteModal" />
 }
-@if (editNoteIndex != -1)
+@if (editNoteIndex != -1 && notes != null && editNoteIndex >= 0 && editNoteIndex < notes.Count)
 {
     <AddNoteModal OnNoteAdded="UpdateNote" OnClose="CancelEditNote" NoteToEdit="notes[editNoteIndex]" />
 }
 
-<ul>
-    @for (int i = 0; i < notes.Count; i++)
-    {
-        var note = notes[i];
-        <li>
-            <strong>@note.Topic</strong>: @note.Details
-            <button class="btn btn-sm btn-secondary ms-2" @onclick="() => EditNote(i)"><span class="oi oi-pencil"></span> Edit</button>
-            <button class="btn btn-sm btn-danger ms-1" @onclick="() => DeleteNote(i)"><span class="oi oi-trash"></span> Delete</button>
-        </li>
-    }
-</ul>
+@if (notes == null)
+{
+    <div>Loading notes...</div>
+}
+else if (notes!.Count == 0)
+{
+    <div>No notes found.</div>
+}
+else
+{
+    <div class="row">
+        @foreach (var note in notes!)
+        {
+            {
+            <div class="col-md-4 mb-3">
+                <div class="card mb-2 connection-card" style="cursor:pointer;" @onclick="() => OpenNoteDetails(note.Id)">
+                    <div class="card-body text-center">
+                        <h5 class="card-title mb-2">@note.Topic</h5>
+                        <div class="card-text mb-1 text-muted">@note.CreatedAt.ToShortDateString()</div>
+                    </div>
+                </div>
+            </div>
+            }
+        }
+    </div>
+}
 
 @code {
     private bool showAddNoteModal = false;
     private int editNoteIndex = -1;
-    private List<AddNoteModal.Note> notes = new();
+    private List<AddNoteModal.Note>? notes = null;
 
     private void ShowAddNoteModal() => showAddNoteModal = true;
     private void HideAddNoteModal() => showAddNoteModal = false;
 
-    private void AddNote(AddNoteModal.Note note)
+    private async Task AddNote(AddNoteModal.Note note)
     {
-        notes.Add(note);
-        showAddNoteModal = false;
+        try
+        {
+            var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+            var user = authState.User;
+            var userId = user?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userId))
+            {
+                return;
+            }
+        
+            var dbNote = new ConnectionsManager.Data.Note
+            {
+                UserId = userId,
+                CreatedAt = DateTime.SpecifyKind(note.CreatedAt, DateTimeKind.Utc),
+                Topic = note.Topic,
+                Details = note.Details
+            };
+            DbContext.Notes.Add(dbNote);
+            await DbContext.SaveChangesAsync();
+            
+            await LoadNotesAsync();
+            showAddNoteModal = false;
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Error adding note: {ex.Message}");
+        }
     }
 
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadNotesAsync();
+    }
+    private async Task LoadNotesAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        var userId = user?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+        if (string.IsNullOrEmpty(userId))
+        {
+            notes = new List<AddNoteModal.Note>();
+            return;
+        }
+        notes = await DbContext.Notes
+            .Where(n => n.UserId == userId)
+            .Select(n => new AddNoteModal.Note
+            {
+                Id = n.Id,
+                Topic = n.Topic,
+                CreatedAt = n.CreatedAt,
+                Details = n.Details
+            })
+            .ToListAsync();
+    }
+
+    private async Task ReloadNotesAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        var userId = user?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+        Console.WriteLine($"Reloading notes for user: {userId}");
+        if (string.IsNullOrEmpty(userId))
+        {
+            notes = new List<AddNoteModal.Note>();
+            return;
+        }
+        var allUserIds = await DbContext.Notes.Select(n => n.UserId).ToListAsync();
+        Console.WriteLine($"All user IDs in Notes table: {string.Join(", ", allUserIds)}");
+        notes = await DbContext.Notes
+            .Where(n => n.UserId == userId)
+            .Select(n => new AddNoteModal.Note
+            {
+                Id = n.Id,
+                Topic = n.Topic,
+                CreatedAt = n.CreatedAt,
+                Details = n.Details
+            })
+            .ToListAsync();
+            Console.WriteLine($"Loaded {notes.Count} notes for user {userId}");
+    }
     private void EditNote(int index)
     {
         editNoteIndex = index;
@@ -54,7 +151,7 @@
 
     private void UpdateNote(AddNoteModal.Note updatedNote)
     {
-        if (editNoteIndex != -1)
+        if (editNoteIndex != -1 && notes != null)
         {
             notes[editNoteIndex] = updatedNote;
             editNoteIndex = -1;
@@ -68,6 +165,15 @@
 
     private void DeleteNote(int index)
     {
-        notes.RemoveAt(index);
+       if (notes != null)
+       {
+           notes.RemoveAt(index);
+       }
+    }
+
+    [Inject] public NavigationManager Navigation { get; set; } = default!;
+    private void OpenNoteDetails(int noteId)
+    {
+        Navigation.NavigateTo($"/mynotes/{noteId}");
     }
 }

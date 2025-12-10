@@ -2,6 +2,7 @@
 @using ConnectionsManager.Data
 @inject ApplicationDbContext dbContext
 @inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
 <h1>Connection Details</h1>
 @if (connection != null)
@@ -25,6 +26,7 @@ else
 @if (showEditForm && connection != null)
 {
     <EditForm Model="connection" OnValidSubmit="SaveEdit">
+        <DataAnnotationsValidator />
         <div class="form-group mb-2">
             <label>First Name</label>
             <InputText class="form-control" @bind-Value="connection.FirstName" />
@@ -61,7 +63,7 @@ else
 @code {
     [Parameter]
     public int id { get; set; }
-    private Connection connection;
+    private Connection? connection;
     private bool showEditForm = false;
 
     protected override async Task OnInitializedAsync()
@@ -81,9 +83,34 @@ else
 
     private async Task SaveEdit()
     {
-        dbContext.Connections.Update(connection);
-        await dbContext.SaveChangesAsync();
-        showEditForm = false;
+        try
+        {
+            if (connection != null)
+            {
+                var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+                var user = authState.User;
+                var userId = user?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+                if (!string.IsNullOrEmpty(userId))
+                {
+                    connection.UserId = userId;
+                }
+                
+                if (connection.BirthDate.HasValue)
+                {
+                    connection.BirthDate = connection.BirthDate.Value.Date.ToUniversalTime();
+                }
+                
+                dbContext.Connections.Update(connection);
+                await dbContext.SaveChangesAsync();
+                showEditForm = false;
+                StateHasChanged();
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error saving connection: {ex.Message}");
+            Console.WriteLine($"Full Exception: {ex}");
+        }
     }
 
     private async Task DeleteConnection()

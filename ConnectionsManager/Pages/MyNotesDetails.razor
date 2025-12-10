@@ -1,0 +1,107 @@
+@page "/mynotes/{Id:int}"
+@using Microsoft.AspNetCore.Components.Forms
+@inject ConnectionsManager.Data.ApplicationDbContext DbContext
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@attribute [Authorize]
+
+<h1>Notes Details</h1>
+
+@if (note == null)
+{
+    <div>Loading...</div>
+}
+else if (!canEdit)
+{
+    <div class="alert alert-danger">You do not have permission to view or edit this note.</div>
+}
+else
+{
+    <div class="connection-details">
+        <h3>@note.Topic</h3>
+        <p><strong>Content:</strong> @note.Details</p>
+        <p><strong>Date:</strong> @note.CreatedAt.ToString()</p>
+        <div class="d-flex gap-2 mt-3">
+            <button class="btn-edit d-flex align-items-center" @onclick="ShowEditModal">
+                <span class="oi oi-pencil me-1" aria-hidden="true"></span> Edit
+            </button>
+            <button class="btn-delete d-flex align-items-center" @onclick="DeleteNote">
+                <span class="oi oi-trash me-1" aria-hidden="true"></span> Delete
+            </button>
+            <button class="btn btn-secondary" @onclick="GoBack">Back</button>
+        </div>
+    </div>
+    @if (showEditModal)
+    {
+        <EditForm Model="note" OnValidSubmit="HandleEditSubmit">
+            <div class="mb-3">
+                <label>Topic</label>
+                <InputText class="form-control" @bind-Value="note.Topic" />
+            </div>
+            <div class="mb-3">
+                <label>Content</label>
+                <InputTextArea class="form-control" @bind-Value="note.Details" />
+            </div>
+            <button type="submit" class="btn-edit">Save</button>
+            <button type="button" class="btn-delete" @onclick="HideEditModal">Cancel</button>
+        </EditForm>
+    }
+}
+
+@code {
+    [Parameter] public int Id { get; set; }
+    private ConnectionsManager.Data.Note? note;
+    private bool canEdit = false;
+    private bool showEditModal = false;
+    private string timeString = string.Empty;
+    [Inject]
+    public NavigationManager NavigationManager { get; set; } = default!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (Id <= 0)
+        {
+            Console.WriteLine($"Invalid Id: {Id}");
+            return;
+        }
+        
+        note = await DbContext.Notes.FindAsync(Id);
+        if (note == null)
+        {
+            Console.WriteLine($"Note not found with Id: {Id}");
+            return;
+        }
+        
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        var userId = user.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+        canEdit = note != null && note.UserId == userId;
+    }
+
+    private void ShowEditModal() => showEditModal = true;
+
+    private void HideEditModal() => showEditModal = false;
+
+    private void GoBack() => NavigationManager.NavigateTo("/mynotes");
+
+    private async Task HandleEditSubmit()
+    {
+        if (note != null)
+        {
+            // Only update topic and details; CreatedAt should not be changed on edit
+            DbContext.Notes.Update(note);
+            await DbContext.SaveChangesAsync();
+            showEditModal = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task DeleteNote()
+        {
+            if (note != null)
+            {
+                DbContext.Notes.Remove(note);
+                await DbContext.SaveChangesAsync();
+                NavigationManager.NavigateTo("/mynotes");
+            }
+        }
+}
