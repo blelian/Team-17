@@ -1,0 +1,105 @@
+@using Microsoft.AspNetCore.Components.Forms
+@page "/reminder/{Id:int}"
+@inject ConnectionsManager.Data.ApplicationDbContext DbContext
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@attribute [Authorize]
+
+<h1>Reminder Details</h1>
+
+@if (reminder == null)
+{
+    <div>Loading...</div>
+}
+else if (!canEdit)
+{
+    <div class="alert alert-danger">You do not have permission to view or edit this reminder.</div>
+}
+else
+{
+    <div class="connection-details">
+        <h3>@reminder.Subject</h3>
+        <p><strong>Date:</strong> @reminder.Date.ToShortDateString()</p>
+        <p><strong>Time:</strong> @DateTime.Today.Add(reminder.Time).ToString("hh:mm tt")</p>
+        <p><strong>Details:</strong> @reminder.Details</p>
+    <div class="d-flex gap-2 mt-3">
+        <button class="btn-edit d-flex align-items-center" @onclick="ShowEditModal">
+            <span class="oi oi-pencil me-1" aria-hidden="true"></span> Edit
+        </button>
+        <button class="btn-delete d-flex align-items-center" @onclick="DeleteReminder">
+            <span class="oi oi-trash me-1" aria-hidden="true"></span> Delete
+        </button>
+    </div>
+    </div>
+    @if (showEditModal)
+    {
+        <EditForm Model="reminder" OnValidSubmit="HandleEditSubmit">
+            <div class="mb-3">
+                <label>Subject</label>
+                <InputText class="form-control" @bind-Value="reminder.Subject" />
+            </div>
+            <div class="mb-3">
+                <label>Date</label>
+                <InputDate class="form-control" @bind-Value="reminder.Date" />
+            </div>
+            <div class="mb-3">
+                <label>Time</label>
+                <InputText class="form-control" @bind-Value="timeString" type="time" />
+            </div>
+            <div class="mb-3">
+                <label>Details</label>
+                <InputTextArea class="form-control" @bind-Value="reminder.Details" />
+            </div>
+            <button type="submit" class="btn-edit">Save</button>
+            <button type="button" class="btn-delete" @onclick="HideEditModal">Cancel</button>
+        </EditForm>
+    }
+}
+
+@code {
+    [Parameter] public int Id { get; set; }
+    private ConnectionsManager.Data.Reminder? reminder;
+    private bool showEditModal = false;
+    private bool canEdit = false;
+    private string timeString = string.Empty;
+    [Inject] private NavigationManager Navigation { get; set; } = default!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        reminder = await DbContext.Reminders.FindAsync(Id);
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        var userId = user?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+        canEdit = reminder != null && reminder.UserId == userId;
+        if (TimeSpan.TryParse(timeString, out var time))
+        {
+            reminder.Time = time;
+        }
+    }
+
+    private void ShowEditModal() => showEditModal = true;
+    private void HideEditModal() => showEditModal = false;
+
+    private async Task HandleEditSubmit()
+    {
+        if (reminder != null)
+        {
+            if (TimeSpan.TryParse(timeString, out var ts))
+            {
+                reminder.Time = ts;
+            }
+            DbContext.Reminders.Update(reminder);
+            await DbContext.SaveChangesAsync();
+            showEditModal = false;
+            StateHasChanged();
+        }
+    }
+    private async Task DeleteReminder()
+    {
+        if (reminder != null)
+        {
+            DbContext.Reminders.Remove(reminder);
+            await DbContext.SaveChangesAsync();
+            Navigation.NavigateTo("/reminders");
+        }
+    }
+}

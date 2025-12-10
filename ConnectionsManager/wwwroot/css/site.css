@@ -96,23 +96,30 @@ a, .btn-link {
 
     /* connection card */
     .card {
-        display: inline-block;
-        margin: 1rem;
-        align-items: center;
+        display: flex;
+        flex-wrap: wrap;
         justify-content: center;
+        align-content: center;
+        align-items: center;
+        gap: 1rem;
         box-shadow: 0 2px 8px rgba(0,0,0,0.08);
     }
     .connection-card {
+        margin: 0 auto;
         width: 350px;
         height: 180px;
-        background: #d9f7e5;
-        border-left: 5pt solid #63816f;
+        background: linear-gradient(-45deg, #e8f3ff 50%, #f6dbbe 50%);
+        border-left: 5pt solid #8d9be3;
         color: rgb(35, 35, 35);
+        border-radius: 12px;
+        text-align: center;
+    }
+    .card-body {
+        display: flex;
+        flex-direction: column;
         align-items: center;
         justify-content: center;
         align-content: center;
-        border-radius: 12px;
-        text-align: center;
     }
     .card-title {
         font-weight: bold;
@@ -162,8 +169,8 @@ a, .btn-link {
         border-radius: 50%;
   }
 
-    .dashboard-footer {
-        position: fixed;
+    .footer {
+        position:fixed;
         left: 0;
         bottom: 0;
         width: 100%;
