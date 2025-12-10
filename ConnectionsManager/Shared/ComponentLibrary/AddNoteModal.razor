@@ -35,22 +35,7 @@
 
     private Note note = new Note();
 
-    protected override void OnParametersSet()
-    {
-        if (NoteToEdit != null)
-        {
-            note = new Note
-            {
-                Topic = NoteToEdit.Topic,
-                Details = NoteToEdit.Details
-            };
-        }
-        else
-        {
-            note = new Note();
-        }
-    }
-
+    private string timeString="";
     private async Task HandleValidSubmit()
     {
         await OnNoteAdded.InvokeAsync(note);
@@ -65,7 +50,11 @@
 
     public class Note
     {
+        public int Id { get; set; } // primary key
+        public string? UserId { get; set; } 
         public string Topic { get; set; } = string.Empty;
         public string Details { get; set; } = string.Empty;
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public bool IsPrivate { get; set; } = false;
     }
 }
