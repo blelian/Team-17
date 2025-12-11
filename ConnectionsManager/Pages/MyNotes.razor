@@ -8,15 +8,12 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
 
 <h1>My Notes</h1>
+<p>Here you can view and manage your personal notes.</p>
 
-<div class="mb-3">
-    <input placeholder="Topic" class="form-control mb-1" @bind="newNote.Topic" />
-    <textarea placeholder="Details" class="form-control mb-1" @bind="newNote.Details"></textarea>
-    <div class="form-check mb-2">
-        <input class="form-check-input" type="checkbox" @bind="newNote.IsPrivate" />
-        <label class="form-check-label">Private</label>
-    </div>
-    <button class="btn btn-primary" @onclick="AddNoteAsync">Add Note</button>
+<div class="d-flex justify-content-end">
+    <button class="btn btn-primary mb-3" @onclick="ShowAddNoteModal">
+        <span class="oi oi-plus" aria-hidden="true"></span> Add Note
+    </button>
 </div>
 
 
@@ -44,7 +41,7 @@ else
         {
             {
             <div class="col-md-4 mb-3">
-                <div class="card mb-2 connection-card" style="cursor:pointer;" @onclick="() => OpenNoteDetails(note.Id)">
+                <div class="connection-card" style="cursor:pointer;" @onclick="() => OpenNoteDetails(note.Id)">
                     <div class="card-body text-center">
                         <h5 class="card-title mb-2">@note.Topic</h5>
                         <div class="card-text mb-1 text-muted">@note.CreatedAt.ToShortDateString()</div>
@@ -56,30 +53,13 @@ else
     </div>
 }
 
-@if (editingNote != null)
-{
-    <div class="border p-2 mb-2">
-        <h5>Edit Note</h5>
-        <input class="form-control mb-1" @bind="editingNote.Topic" />
-        <textarea class="form-control mb-1" @bind="editingNote.Details"></textarea>
-        <div class="form-check mb-2">
-            <input class="form-check-input" type="checkbox" @bind="editingNote.IsPrivate" />
-            <label class="form-check-label">Private</label>
-        </div>
-        <button class="btn btn-success me-2" @onclick="UpdateNoteAsync">Save</button>
-        <button class="btn btn-secondary" @onclick="CancelEdit">Cancel</button>
-    </div>
-}
-
 @code {
     private bool showAddNoteModal = false;
     private int editNoteIndex = -1;
     private List<AddNoteModal.Note>? notes = null;
 
-    protected override async Task OnInitializedAsync()
-    {
-        notes = await DbContext.Notes.ToListAsync();
-    }
+    private void ShowAddNoteModal() => showAddNoteModal = true;
+    private void HideAddNoteModal() => showAddNoteModal = false;
 
     private async Task AddNote(AddNoteModal.Note note)
     {
@@ -117,6 +97,7 @@ else
     {
         await LoadNotesAsync();
     }
+    
     private async Task LoadNotesAsync()
     {
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
@@ -139,57 +120,18 @@ else
             .ToListAsync();
     }
 
-    private async Task ReloadNotesAsync()
-    {
-        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-        var user = authState.User;
-        var userId = user?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
-        Console.WriteLine($"Reloading notes for user: {userId}");
-        if (string.IsNullOrEmpty(userId))
-        {
-            notes = new List<AddNoteModal.Note>();
-            return;
-        }
-        var allUserIds = await DbContext.Notes.Select(n => n.UserId).ToListAsync();
-        Console.WriteLine($"All user IDs in Notes table: {string.Join(", ", allUserIds)}");
-        notes = await DbContext.Notes
-            .Where(n => n.UserId == userId)
-            .Select(n => new AddNoteModal.Note
-            {
-                Id = n.Id,
-                Topic = n.Topic,
-                CreatedAt = n.CreatedAt,
-                Details = n.Details
-            })
-            .ToListAsync();
-            Console.WriteLine($"Loaded {notes.Count} notes for user {userId}");
-    }
-    private void EditNote(int index)
-    {
-        editingNote = note;
-    }
-
-    private async Task UpdateNoteAsync()
+    private void UpdateNote(AddNoteModal.Note updatedNote)
     {
         if (editNoteIndex != -1 && notes != null)
         {
-            DbContext.Notes.Update(editingNote);
-            await DbContext.SaveChangesAsync();
-            editingNote = null;
+            notes[editNoteIndex] = updatedNote;
+            editNoteIndex = -1;
         }
     }
 
-    private void CancelEdit()
+    private void CancelEditNote()
     {
-        editingNote = null;
-    }
-
-    private async Task DeleteNoteAsync(Note note)
-    {
-       if (notes != null)
-       {
-           notes.RemoveAt(index);
-       }
+        editNoteIndex = -1;
     }
 
     [Inject] public NavigationManager Navigation { get; set; } = default!;
